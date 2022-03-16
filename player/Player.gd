@@ -1,29 +1,30 @@
 extends KinematicBody2D
 
+
 const SPEED = 70
 const STEP = 16
-var move_dir = Vector2(0, 0)
+var move_dir = Vector2(-1, 0)
 var moving = 0
-var spritedir = "down"
+var spritedir = Mov.LEFT
 
 func _physics_process(delta):
 	controls_loop()
 	movement_loop()
 	spritedir_loop()
 	
-	if is_on_wall():
-		if spritedir == "left" and test_move(transform, Vector2(-1, 0)): 
-			anim_switch("push") 
-		if spritedir == "right" and test_move(transform, Vector2(1, 0)):
-			anim_switch("push")
-		if spritedir == "down" and test_move(transform, Vector2(0, 1)) :
-			anim_switch("push")	
-		if spritedir == "up" and test_move(transform, Vector2(0, -1)) :
-			anim_switch("push")	
+	if move_dir == Vector2(0, 0):
+		anim_switch("idle")
+#	elif is_on_wall():
+	elif spritedir == Mov.LEFT and test_move(transform, Vector2(-1, 0)): 
+		anim_switch("push") 
+	elif spritedir == Mov.RIGHT and test_move(transform, Vector2(1, 0)):
+		anim_switch("push")
+	elif spritedir == Mov.DOWN and test_move(transform, Vector2(0, 1)) :
+		anim_switch("push")	
+	elif spritedir == Mov.UP and test_move(transform, Vector2(0, -1)) :
+		anim_switch("push")	
 	elif move_dir != Vector2(0, 0):
 		anim_switch("walk")
-	else:
-		anim_switch("iddle")
 
 func controls_loop():
 #	if moving > 0:
@@ -57,15 +58,35 @@ func check_movement():
 func spritedir_loop():
 	match move_dir:
 		Vector2(-1, 0):
-			spritedir = "left" 
+			spritedir = Mov.LEFT 
 		Vector2(1, 0):
-			spritedir = "right"
+			spritedir = Mov.RIGHT
 		Vector2(0, -1):
-			spritedir = "up"
+			spritedir = Mov.UP
 		Vector2(0, 1):
-			spritedir = "down"
+			spritedir = Mov.DOWN
 	
 func anim_switch(animation):
-	var newanim = str(animation, spritedir)
+	var newanim = str(animation, mov2Str(spritedir))
 	if $Anim.current_animation != newanim:
 		$Anim.play(newanim)
+		
+func mov2Str(mov):
+	match mov:
+		1:
+			return "left"
+		2:
+			return "right"
+		3:
+			return "up"
+		4:
+			return "down"
+
+	
+const Mov = {
+	NONE = 0,
+	LEFT = 1,
+	RIGHT = 2,
+	UP = 3,
+	DOWN = 4
+}
