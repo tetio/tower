@@ -38,20 +38,21 @@ func _physics_process(delta):
 	#check_movement()
 	
 func movement_loop():
-	continue_movement()
-	if moving:
+	if moving > 0:
 		var motion = move_dir.normalized() * SPEED
 		move_and_slide(motion, Vector2(0, 0))
+		continue_movement()
 
 func continue_movement():
+	print("moving step is %d", moving)
 	moving -= 1
 	if moving > 0:
 		if (move_dir.x != 0):
 			move_dir.x += 1*sign(move_dir.x)
 		elif (move_dir.y != 0):
 			move_dir.y += 1*sign(move_dir.y)
-	else:
-		moving = 0
+	elif moving == 0:
+		print(position)
 		move_dir = Vector2(0, 0)
 
 #func check_movement():
@@ -94,12 +95,6 @@ func mov2Str(mov):
 			return "down"
 
 
-func _on_swiped():
-	pass
-	
-func _on_swiped_cancelled():
-	pass
-	
 const Mov = {
 	NONE = 0,
 	LEFT = 1,
@@ -118,5 +113,5 @@ func _on_SwipeDetector_swiped(direction):
 
 
 func _on_SwipeDetector_swiped_cancelled(start_position):
-	moving = 0
-	#pass
+	#moving = 0
+	pass
